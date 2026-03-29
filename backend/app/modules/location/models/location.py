@@ -6,6 +6,7 @@ class Location(Base):
     __tablename__ = "locations"
 
     id = Column(Integer, primary_key=True)
+    external_id = Column(Integer, unique=True, nullable=False)
     name = Column(String, unique=True, nullable=False)
     type = Column(String, nullable=True)
     dimension = Column(String, nullable=False)

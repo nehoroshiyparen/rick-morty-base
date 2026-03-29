@@ -1,1 +1,1 @@
-from .character_episode import character_episode
+from .character_episode import CharacterEpisode

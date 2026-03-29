@@ -1,14 +1,13 @@
 from logging.config import fileConfig
 
 from sqlalchemy import create_engine
-from sqlalchemy import pool
 
 from alembic import context
 
-from app.core.database.base_model import Base
+from app.infrastructure.database.base_model import Base
 from app.core.config import settings
 
-from app.modules.associations import character_episode
+from app.modules.associations import CharacterEpisode
 from app.modules.character.models import Character
 from app.modules.episode.models import Episode
 from app.modules.location.models import Location
@@ -31,7 +30,7 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
-engine = create_engine(config.get_main_option("sqlalchemy.url"))
+engine = create_engine(settings.DATABASE_URL.replace("+aiosqlite", ""))
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

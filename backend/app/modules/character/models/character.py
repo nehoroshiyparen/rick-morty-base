@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import Enum as SAEnum
 import enum
 
-from app.modules.associations import character_episode
+from app.modules.associations import CharacterEpisode
 
 
 class Status(str, enum.Enum):
@@ -24,6 +24,7 @@ class Character(Base):
     __tablename__ = "characters"
 
     id = Column(Integer, primary_key=True)
+    external_id = Column(Integer, unique=True, nullable=False)
 
     name = Column(String, unique=True, nullable=False)
 
@@ -75,6 +76,6 @@ class Character(Base):
 
     episodes = relationship(
         "Episode",
-        secondary=character_episode,
+        secondary=CharacterEpisode,
         back_populates="characters"
     )

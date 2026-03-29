@@ -1,69 +1,82 @@
-from abc import ABC, abstractmethod
-from app.infrastructure.integrations.rick_morty.exceptions import APIClientError, APIHTTPError
+from .base_workflow import BaseWorkflow
+from app.infrastructure.integrations.rick_morty.exceptions import APIClientError
 
-class BaseImportWorkflow(ABC):
+
+class BaseImportWorkflow(BaseWorkflow):
     def __init__(self, client, mapper, repository, resource):
+        super().__init__()
+
         self.client = client
         self.mapper = mapper
         self.repository = repository
         self.resource = resource
 
-    def run(self, mode: str, start=None, end=None, page=None) -> None:
+    async def run(self, session, mode: str, start=None, end=None, page=None) -> None:
+        self.session = session
+
         if mode == "full":
-            return self._run_full()
+            return await self._run_full()
 
         elif mode == "range":
-            return self._run_range(start, end)
+            return await self._run_range(start, end)
 
         elif mode == "single":
-            return self._run_single(page)
+            return await self._run_single(page)
 
-    def _run_full(self):
+    async def _run_full(self):
         page = 1
 
         while True:
-            result = self._process_page(page)
+            result = await self._process_page(page)
 
             if result == "empty":
                 break
 
             if result == "error":
-                # можно решить: continue или break
                 continue
 
             page += 1
 
-    def _run_range(self, start, end):
+    async def _run_range(self, start, end):
         for p in range(start, end + 1):
-            self._process_page(p)
+            await self._process_page(p)
 
-    def _run_single(self, page):
-        self._process_page(page)
+    async def _run_single(self, page):
+        await self._process_page(page)
 
-    def _process_page(self, page):
+    async def _process_page(self, page):
         try:
-            data = self._fetch(page)
+            self.logger.warning(f"Processing page {page}")
 
-            results = data.get("results")
+            data = await self._fetch(page)
 
-            # 👉 конец данных
+            results = data.get("entitiy")
+
             if not results:
+                self.logger.warning(f"Page {page} is empty")
                 return "empty"
 
             mapped = self._map(data)
-            self._save(mapped)
+            await self._save(mapped)
+
+            self.logger.warning(f"Page {page} processed successfully")
 
             return "success"
 
         except APIClientError as e:
-            print(e)
+            self.logger.error(f"API error on page {page}: {e}")
             return "error"
 
-    def _fetch(self, page: int): # raw data
-        return self.client.get(self.resource, page)
+        except Exception:
+            self.logger.exception(f"Unexpected error on page {page}")
+            raise
+
+    async def _fetch(self, page: int): # raw data
+        return await self.client.get(self.resource, page)
     
     def _map(self, data): # raw data -> model
-        return self.mapper.transform(data)
+        return self.mapper.transform_to_model(data)
     
-    def _save(self, data): 
-        return self.repository.upsert_many(data)
+    async def _save(self, data): 
+        repo = self.repository.bind(self.session)
+        await repo.upsert_many(data)

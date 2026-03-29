@@ -1,12 +1,12 @@
 from ..schemas import LocationSchema
-from app.modules.location.models import Location
+from app.modules.location import Location
 from ..utils import extract_ids
 
 class LocationMapper():
     def transform_to_dto(dto: LocationSchema) -> Location:
         return {
-            "location": Location(
-                id=dto.id,
+            "entity": Location(
+                external_id=dto.id,
                 name=dto.name,
                 type=dto.type,
                 dimension=dto.dimension,
@@ -14,6 +14,7 @@ class LocationMapper():
                 url=str(dto.url),
                 created=dto.created,
             ),
-
-            "resident_ids": extract_ids(dto.residents),
+            "relations": {
+                "residents": extract_ids(dto.residents),
+            },
         }

@@ -56,5 +56,39 @@ makemigrations:
 	docker compose exec backend alembic revision --autogenerate -m "$(msg)"
 
 # откат на 1 шаг
+
 downgrade:
 	docker compose exec backend alembic downgrade -1
+
+
+import-all:
+	docker compose exec backend python -m app.core.cli import-all
+
+
+import-characters:
+	docker compose exec backend python -m app.core.cli import-data characters
+
+
+import-episodes:
+	docker compose exec backend python -m app.core.cli import-data episode
+
+
+import-locations:
+	docker compose exec backend python -m app.core.cli import-data location
+
+
+sync-all:
+	docker compose exec backend python -m app.core.cli sync-all
+
+
+sync-episodes:
+	docker compose exec backend python -m app.core.cli sync char-episodes
+
+
+sync-locations:
+	docker compose exec backend python -m app.core.cli sync char-locations
+
+
+bootstrap:
+	docker compose exec backend python -m app.core.cli import-all
+	docker compose exec backend python -m app.core.cli sync-all
