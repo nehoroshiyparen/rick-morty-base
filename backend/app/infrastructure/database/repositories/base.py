@@ -35,8 +35,8 @@ class BaseRepository(Generic[ModelType]):
 
         await self.session.execute(stmt)
 
-    async def get_by_external_ids(self, external_ids: list[str]):
-        stmt = select(ModelType).where(ModelType.external_id.in_(external_ids))
+    async def get_by_external_ids(self, external_ids: list[int]):
+        stmt = select(self.model).where(self.model.external_id.in_(external_ids))
         result = await self.session.execute(stmt)
         return result.scalars().all()
 

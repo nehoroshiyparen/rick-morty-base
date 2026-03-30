@@ -11,7 +11,7 @@ class Episode(Base):
     id = Column(Integer, primary_key=True)
     external_id = Column(Integer, unique=True, nullable=False)
 
-    name = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
     air_date = Column(DateTime(timezone=True))
 
     episode = Column(String, unique=True, nullable=False)

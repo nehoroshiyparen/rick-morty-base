@@ -8,16 +8,16 @@ from app.modules.associations import CharacterEpisode
 
 
 class Status(str, enum.Enum):
-    ALIVE = "alive"
-    DEAD = "dead"
-    UNKNOWN = "unknown"
+    ALIVE = "Alive"
+    DEAD = "Dead"
+    UNKNOWN = "Unknown"
 
 
 class Gender(str, enum.Enum):
-    FEMALE = "female"
-    MALE = "male"
-    GENDERLESS = "genderless"
-    UNKNOWN = "unknown"
+    FEMALE = "Female"
+    MALE = "Male"
+    GENDERLESS = "Genderless"
+    UNKNOWN = "Unknown"
 
 
 class Character(Base):
@@ -26,7 +26,7 @@ class Character(Base):
     id = Column(Integer, primary_key=True)
     external_id = Column(Integer, unique=True, nullable=False)
 
-    name = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
 
     status = Column(
         SAEnum(Status, name="status_enum", native_enum=False),

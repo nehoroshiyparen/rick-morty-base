@@ -1,7 +1,7 @@
 from app.infrastructure.database import BaseRepository
 from .models import Character
 from sqlalchemy import update, case
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.dialects.sqlite import insert
 from ..associations import CharacterEpisode
 
 class CharacterRepository(BaseRepository):

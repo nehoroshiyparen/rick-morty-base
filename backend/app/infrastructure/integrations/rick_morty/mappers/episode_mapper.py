@@ -1,18 +1,20 @@
 from ..schemas import EpisodeSchema
 from app.modules.episode import Episode
-from ..utils import extract_ids
+from ..utils import extract_ids, parse_air_date
 
 class EpisodeMapper():
-    def transform_to_model(dto: EpisodeSchema) -> Episode:
+    @staticmethod
+    def transform_to_model(data: dict) -> dict:
+        dto = EpisodeSchema.model_validate(data)
         return {
             "entity": Episode(
                 external_id=dto.id,
                 name=dto.name,
-                air_date=dto.air_date,
+                air_date=parse_air_date(dto.air_date),
                 episode=dto.episode,
 
                 url=str(dto.url),
-                created=dto.created,
+                created_at=dto.created,
             ),
             "relations": {
                 "characters": extract_ids(dto.characters),

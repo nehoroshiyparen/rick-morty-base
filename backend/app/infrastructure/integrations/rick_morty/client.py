@@ -22,7 +22,9 @@ class RickMortyClient:
         
         if response.status_code >= 400:
             raise APIResponseError(
-                f"HTTP {response.status_code}: {response.text}"
+                status_code=response.status_code,
+                message=response.text,
+                url=str(response.url)
             )
 
         try:

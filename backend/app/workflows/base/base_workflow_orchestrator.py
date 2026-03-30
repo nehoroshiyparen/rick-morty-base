@@ -28,15 +28,14 @@ class BaseWorkflowOrchestrator():
 
         async with self.session_factory() as session:
             try:
-                async with session as session:
-                    for name, workflow in self.workflows.items():
-                        async with session.begin():
-                            self.logger.warning(f"Running workflow: {name}")
-                            await workflow.run(
-                                session=session,
-                                mode=mode,
-                                **kwargs
-                            )
+                for name, workflow in self.workflows.items():
+                    async with session.begin():
+                        self.logger.warning(f"Running workflow: {name}")
+                        await workflow.run(
+                            session=session,
+                            mode=mode,
+                            **kwargs
+                        )
                 self.logger.warning("Finished ALL workflows")
 
             except Exception:

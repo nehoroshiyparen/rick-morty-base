@@ -1,5 +1,6 @@
 from ...base import BaseSyncWorkflow
-from app.infrastructure.database import  BaseRepository
+from app.infrastructure.database import BaseRepository
+from app.infrastructure.integrations.rick_morty.types import ResourceType
 
 class CharacterEpisodeSyncWorkflow(BaseSyncWorkflow):
     def __init__(self, character_repo: BaseRepository, episode_repo: BaseRepository):
@@ -15,6 +16,9 @@ class CharacterEpisodeSyncWorkflow(BaseSyncWorkflow):
             episode_ext_ids.add(item["entity"].external_id)
             char_ext_ids.update(item["relations"]["characters"])
         
+        self.character_repo.bind(self.session)
+        self.episode_repo.bind(self.session)
+
         characters = await self.character_repo.get_by_external_ids(list(char_ext_ids))
         episodes = await self.episode_repo.get_by_external_ids(list(episode_ext_ids))
 
@@ -44,6 +48,6 @@ class CharacterEpisodeSyncWorkflow(BaseSyncWorkflow):
 
         return links
 
-    async def _save(self, links: list):
-        repo = self.character_repo.bind(self.session)
-        await repo.add_episode_links_batch(links)
+    async def _save(self, links: list) -> None:
+        self.character_repo.bind(self.session)
+        await self.character_repo.add_episode_links_batch(links)

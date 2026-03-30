@@ -3,7 +3,9 @@ from app.modules.location import Location
 from ..utils import extract_ids
 
 class LocationMapper():
-    def transform_to_dto(dto: LocationSchema) -> Location:
+    @staticmethod
+    def transform_to_model(data: dict) -> dict:
+        dto = LocationSchema.model_validate(data)
         return {
             "entity": Location(
                 external_id=dto.id,
@@ -12,7 +14,7 @@ class LocationMapper():
                 dimension=dto.dimension,
 
                 url=str(dto.url),
-                created=dto.created,
+                created_at=dto.created,
             ),
             "relations": {
                 "residents": extract_ids(dto.residents),

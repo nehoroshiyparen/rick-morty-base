@@ -28,36 +28,14 @@ def import_data(
     asyncio.run(_run())
 
 @app.command()
-def sync(resource: str = typer.Argument(...)):
-    """
-    Sync relations (char-episodes, char-locations)
-    """
-
-    async def _run():
-        from app.workflows.rick_morty import sync_orchestrator
-        await sync_orchestrator.run_one(name=resource)
-
-    asyncio.run(_run())
-
-@app.command()
 def import_all():
     async def _run():
         from app.workflows.rick_morty import import_orchestrator
 
-        print("ORCH OBJECT:", import_orchestrator)
-        print("HAS RUN_ALL:", hasattr(import_orchestrator, "run_all"))
+        print("ЙОУ")
 
         await import_orchestrator.run_all()
     
-    asyncio.run(_run())
-
-
-@app.command()
-def sync_all():
-    async def _run():
-        from app.workflows.rick_morty import sync_orchestrator
-        await sync_orchestrator.run_all()
-
     asyncio.run(_run())
 
 if __name__ == "__main__":

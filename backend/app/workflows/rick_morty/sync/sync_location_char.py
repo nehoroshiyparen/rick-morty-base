@@ -1,4 +1,5 @@
 from ...base import BaseSyncWorkflow
+from app.infrastructure.integrations.rick_morty.types import ResourceType
 
 class LocationCharacterSyncWorkflow(BaseSyncWorkflow):
     def __init__(self, location_repo, character_repo):

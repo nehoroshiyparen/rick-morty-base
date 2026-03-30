@@ -2,3 +2,4 @@ from .base_import_workflow import BaseImportWorkflow
 from .base_sync_workflow import BaseSyncWorkflow
 
 from .base_workflow_orchestrator import BaseWorkflowOrchestrator
+from .base_workflow import BaseWorkflow

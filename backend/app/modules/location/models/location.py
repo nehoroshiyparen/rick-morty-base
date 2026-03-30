@@ -7,7 +7,7 @@ class Location(Base):
 
     id = Column(Integer, primary_key=True)
     external_id = Column(Integer, unique=True, nullable=False)
-    name = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
     type = Column(String, nullable=True)
     dimension = Column(String, nullable=False)
     url = Column(String, unique=True, nullable=False)

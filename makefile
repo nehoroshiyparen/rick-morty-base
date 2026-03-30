@@ -76,19 +76,5 @@ import-episodes:
 import-locations:
 	docker compose exec backend python -m app.core.cli import-data location
 
-
-sync-all:
-	docker compose exec backend python -m app.core.cli sync-all
-
-
-sync-episodes:
-	docker compose exec backend python -m app.core.cli sync char-episodes
-
-
-sync-locations:
-	docker compose exec backend python -m app.core.cli sync char-locations
-
-
 bootstrap:
 	docker compose exec backend python -m app.core.cli import-all
-	docker compose exec backend python -m app.core.cli sync-all

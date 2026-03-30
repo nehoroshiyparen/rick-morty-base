@@ -1,9 +1,11 @@
 from app.modules.character import Character
 from ..schemas import CharacterSchema
-from ..utils import extract_id, extract_ids
+from ..utils import extract_id, extract_ids, normalize_character
 
 class CharacterMapper():
-    def transform_to_model(dto: CharacterSchema) -> Character:
+    @staticmethod
+    def transform_to_model(data: dict) -> dict:
+        dto = CharacterSchema.model_validate(normalize_character(data))
         return {
             "entity": Character(
                 external_id=dto.id,
