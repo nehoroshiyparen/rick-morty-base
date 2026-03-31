@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     APP_HOST: str
 
     DATABASE_URL: str
+    TEST_DATABASE_URL: str
 
     model_config = SettingsConfigDict(env_file=".env")
 

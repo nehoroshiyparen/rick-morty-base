@@ -1,5 +1,6 @@
 from .base_workflow import BaseWorkflow
 from app.infrastructure.integrations.rick_morty.exceptions import APIClientError, APIResponseError
+import asyncio
 
 
 class BaseImportWorkflow(BaseWorkflow):
@@ -73,10 +74,15 @@ class BaseImportWorkflow(BaseWorkflow):
 
         except APIResponseError as e:
             if e.status_code == 404:
-                self.logger.warning(f"Page {page} does not exist. Stopping.")
+                self.logger.warning(f"Page {page} not found. Stop pagination.")
                 return "empty"
 
-            self.logger.error(f"API error on page {page}: {e}")
+            if e.status_code == 429:
+                self.logger.warning(f"Rate limit on page {page}")
+                await asyncio.sleep(5)
+                return "retry"
+
+            self.logger.error(f"API response error on page {page}: {e}")
             return "error"
 
         except APIClientError as e:

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from .config import settings
+from app.core.router import register_routers
 
 class App:
     def __init__(self):
@@ -13,6 +14,7 @@ class App:
     
     def setup(self):
         """Натсройка приложения: routes, middlewares etc."""
+        register_routers(self.fastapi_app)
     
     def start(self):
         import uvicorn

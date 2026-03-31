@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar, Type, Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.sqlite import insert
-from sqlalchemy import select
+from sqlalchemy import select, delete, update
 
 ModelType = TypeVar("ModelType")
 
@@ -39,6 +39,42 @@ class BaseRepository(Generic[ModelType]):
         stmt = select(self.model).where(self.model.external_id.in_(external_ids))
         result = await self.session.execute(stmt)
         return result.scalars().all()
+    
+    async def get_by_id(self, id: int):
+        stmt = select(self.model).where(self.model.id == id)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def get_list(self, limit: int = 20, offset: int = 0):
+        stmt = select(self.model).limit(limit).offset(offset)
+        result = await self.session.execute(stmt)
+        return result.scalars().all()
+
+    async def delete(self, id: int):
+        stmt = (
+            delete(self.model)
+            .where(self.model.id == id)
+        )
+
+        result = await self.session.execute(stmt)
+
+        if result.rowcount == 0:
+            return False
+
+        return True
+
+    async def update(self, id: int, data: dict):
+        filtered = {k: v for k, v in data.items() if v is not None}
+        stmt = update(self.model).where(self.model.id == id).values(**filtered).returning(self.model)
+        result = await self.session.execute(stmt)
+        updated = result.scalar_one_or_none()
+        return updated
+
+    async def commit(self):
+        await self.session.commit()
+
+    async def rollback(self):
+        await self.session.rollback()
 
     def _to_dict(self, entity):
         data = {}

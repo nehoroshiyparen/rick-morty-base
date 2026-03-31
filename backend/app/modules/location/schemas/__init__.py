@@ -1,0 +1,2 @@
+from .location_update_schema import LocationUpdateSchema
+from .location_response_schema import LocationResponseSchema

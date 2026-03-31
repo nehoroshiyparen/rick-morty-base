@@ -60,6 +60,18 @@ makemigrations:
 downgrade:
 	docker compose exec backend alembic downgrade -1
 
+# Очистить данные в бд
+flush-db:
+	rm -f backend/data/app.db
+	mkdir -p backend/data
+	touch backend/data/app.db
+
+# Тесты
+
+test:
+	docker compose exec backend python -m pytest tests/ -v
+
+# Работа со сторонним апи
 
 import-all:
 	docker compose exec backend python -m app.core.cli import-all
