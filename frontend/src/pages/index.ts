@@ -1,4 +1,7 @@
 export { Home } from "./Home";
-export { Characters } from "./Characters";
-export { Locations } from "./Locations";
-export { Episodes } from "./Episodes";
+export { CharactersPage } from "./Characters/CharactersPage";
+export { CharacterPage } from "./Characters/CharacterPage";
+export { LocationsPage } from "./Locations/LocationsPage";
+export { LocationPage } from "./Locations/LocationPage";
+export { EpisodesPage } from "./Episodes/EpisodesPage";
+export { EpisodePage } from "./Episodes/EpisodePage";

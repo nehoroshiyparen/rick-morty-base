@@ -1,4 +1,3 @@
-# app/core/router.py
 from fastapi import FastAPI
 
 def register_routers(app: FastAPI, prefix: str = "/api"):

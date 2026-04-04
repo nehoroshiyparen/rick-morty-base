@@ -1,6 +1,8 @@
 from .repository import LocationRepository
 from .schemas import LocationUpdateSchema
 from fastapi import HTTPException
+from sqlalchemy.orm import selectinload
+from .models import Location
 
 class LocationService:
     def __init__(self, repo: LocationRepository):
@@ -10,7 +12,12 @@ class LocationService:
         return await self.repo.get_list(limit, offset)
 
     async def get_by_id(self, location_id):
-        location = await self.repo.get_by_id(location_id)
+        location = await self.repo.get_by_id(
+            location_id,
+            options=[
+                selectinload(Location.characters_location),
+            ]
+        )
         if not location:
             raise HTTPException(status_code=404, detail="Location not found")
         return location
@@ -22,9 +29,14 @@ class LocationService:
         update_data = data.model_dump(exclude_unset=True)
         if not update_data:
             raise HTTPException(status_code=400, detail="No fields provided for update")
-        result = await self.repo.update(location_id, update_data)
+        await self.repo.update(location_id, update_data)
         await self.repo.commit()
-        return result
+        return await self.repo.get_by_id(
+            location_id,
+            options=[
+                selectinload(Location.characters_location),
+            ]
+        )
 
     async def delete(self, location_id):
         location = await self.repo.delete(location_id)

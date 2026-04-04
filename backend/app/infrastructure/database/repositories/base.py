@@ -40,8 +40,12 @@ class BaseRepository(Generic[ModelType]):
         result = await self.session.execute(stmt)
         return result.scalars().all()
     
-    async def get_by_id(self, id: int):
+    async def get_by_id(self, id: int, options: list = None):
         stmt = select(self.model).where(self.model.id == id)
+
+        if options:
+            stmt = stmt.options(*options)
+
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 

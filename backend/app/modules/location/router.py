@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .service import LocationService
 from .repository import LocationRepository
-from .schemas import LocationUpdateSchema, LocationResponseSchema
+from .schemas import LocationUpdateSchema, LocationFullResponseSchema, LocationPreviewResponseSchema
 from app.infrastructure.database import get_session
+from app.infrastructure.lib.handlers import ApiSuccess
 
 router = APIRouter()
 
@@ -13,35 +14,38 @@ def get_service(session: AsyncSession = Depends(get_session)):
 
 @router.get(
         '/',
-        response_model=list[LocationResponseSchema],
+        response_model=ApiSuccess[list[LocationPreviewResponseSchema]],
     )
 async def get_locations(
     limit: int = 20,
     offset: int = 0,
     service: LocationService = Depends(get_service)
 ):
-    return await service.get_list(limit=limit, offset=offset)
+    locations = await service.get_list(limit=limit, offset=offset)
+    return ApiSuccess(data=locations)
 
 @router.get(
         "/{location_id}",
-        response_model=LocationResponseSchema,
+        response_model=ApiSuccess[LocationFullResponseSchema],
     )
 async def get_location(
     location_id: int,
     service: LocationService = Depends(get_service)
 ):
-    return await service.get_by_id(location_id)
+    location = await service.get_by_id(location_id)
+    return ApiSuccess(data=location)
 
 @router.patch(
         "/{location_id}",
-        response_model=LocationResponseSchema,
+        response_model=ApiSuccess[LocationFullResponseSchema],
     )
 async def update_location(
     location_id: int,
     data: LocationUpdateSchema,
     service: LocationService = Depends(get_service)
 ):
-    return await service.update(location_id, data)
+    updated_data = await service.update(location_id, data)
+    return ApiSuccess(data=updated_data)
 
 @router.delete(
         "/{location_id}",

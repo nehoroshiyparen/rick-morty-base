@@ -1,2 +1,3 @@
 from .character_update_schema import CharacterUpdateSchema
-from .character_response_schema import CharacterResponseSchema
+from .character_full_response_schema import CharacterFullResponseSchema
+from .character_preview_response_schema import CharacterPreviewResponseSchema

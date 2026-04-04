@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     APP_PORT: int
     APP_HOST: str
 
+    CLIENT_URL: str
+
     DATABASE_URL: str
     TEST_DATABASE_URL: str
 

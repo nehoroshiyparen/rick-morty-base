@@ -1,6 +1,14 @@
 import { APP_ROUTES } from "./config";
 import type { AppRoute } from "./types/AppRoute";
-import { Home, Characters, Locations, Episodes } from "../../pages";
+import {
+  Home,
+  CharactersPage,
+  LocationsPage,
+  EpisodesPage,
+  CharacterPage,
+  LocationPage,
+  EpisodePage,
+} from "@/pages";
 import { SimpleLayout } from "../layouts";
 
 export const routes: AppRoute[] = [
@@ -11,17 +19,32 @@ export const routes: AppRoute[] = [
   },
   {
     path: APP_ROUTES.characters,
-    page: Characters,
+    page: CharactersPage,
     layout: SimpleLayout,
   },
   {
     path: APP_ROUTES.locations,
-    page: Locations,
+    page: LocationsPage,
     layout: SimpleLayout,
   },
   {
     path: APP_ROUTES.episodes,
-    page: Episodes,
+    page: EpisodesPage,
+    layout: SimpleLayout,
+  },
+  {
+    path: APP_ROUTES.character,
+    page: CharacterPage,
+    layout: SimpleLayout,
+  },
+  {
+    path: APP_ROUTES.location,
+    page: LocationPage,
+    layout: SimpleLayout,
+  },
+  {
+    path: APP_ROUTES.episode,
+    page: EpisodePage,
     layout: SimpleLayout,
   },
 ];

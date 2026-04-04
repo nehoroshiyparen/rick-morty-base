@@ -1,2 +1,3 @@
 from .episode_update_schema import EpisodeUpdateSchema 
-from .episode_response_schema import EpisodeResponseSchema
+from .episode_full_response_schema import EpisodeFullResponseSchema
+from .episode_preview_response_schema import EpisodePreviewResponseSchema

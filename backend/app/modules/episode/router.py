@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from .service import EpisodeService
 from .repository import EpisodeRepository
-from .schemas import EpisodeUpdateSchema, EpisodeResponseSchema
+from .schemas import EpisodeUpdateSchema, EpisodeFullResponseSchema, EpisodePreviewResponseSchema
 from app.infrastructure.database import get_session
+from app.infrastructure.lib.handlers import ApiSuccess
 
 router = APIRouter()
 
@@ -13,35 +14,38 @@ def get_service(session: AsyncSession = Depends(get_session)):
 
 @router.get(
         '/',
-        response_model=list[EpisodeResponseSchema]
+        response_model=ApiSuccess[list[EpisodePreviewResponseSchema]]
     )
 async def get_episodes(
     limit: int = 20,
     offset: int = 0,
     service: EpisodeService = Depends(get_service)
 ):
-    return await service.get_list(limit=limit, offset=offset)
+    episodes = await service.get_list(limit=limit, offset=offset)
+    return ApiSuccess(data=episodes)
 
 @router.get(
         "/{episode_id}",
-        response_model=EpisodeResponseSchema,
+        response_model=ApiSuccess[EpisodeFullResponseSchema],
     )
 async def get_episode(
     episode_id: int,
     service: EpisodeService = Depends(get_service)
 ):
-    return await service.get_by_id(episode_id)
+    episode = await service.get_by_id(episode_id)
+    return ApiSuccess(data=episode)
 
 @router.patch(
         "/{episode_id}",
-        response_model=EpisodeResponseSchema,
+        response_model=ApiSuccess[EpisodeFullResponseSchema],
     )
 async def update_episode(
     episode_id: int,
     data: EpisodeUpdateSchema,
     service: EpisodeService = Depends(get_service)
 ):
-    return await service.update(episode_id, data)
+    updated_data = await service.update(episode_id, data)
+    return ApiSuccess(data=updated_data)
 
 @router.delete(
         "/{episode_id}",
