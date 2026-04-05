@@ -1,4 +1,3 @@
-import pytest
 import pytest_asyncio
 from datetime import datetime, timezone
 from app.modules.episode.models.episode import Episode
@@ -27,11 +26,11 @@ class TestGetEpisodes:
 
     async def test_returns_empty_list(self, client):
         response = await client.get("/api/episodes/")
-        assert response.json() == []
+        assert response.json()["data"] == []
 
     async def test_returns_one_episode(self, client, episode):
         response = await client.get("/api/episodes/")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
     async def test_limit(self, client, session):
         for i in range(5):
@@ -43,12 +42,11 @@ class TestGetEpisodes:
                 air_date=datetime(2013, 12, 2, tzinfo=timezone.utc),
                 created_at=datetime.now(timezone.utc),
             ))
-
         await session.commit()
 
         response = await client.get("/api/episodes/?limit=2")
         assert response.status_code == 200
-        assert len(response.json()) == 2
+        assert len(response.json()["data"]) == 2
 
     async def test_offset(self, client, session):
         for i in range(3):
@@ -60,11 +58,10 @@ class TestGetEpisodes:
                 air_date=datetime(2013, 12, 2, tzinfo=timezone.utc),
                 created_at=datetime.now(timezone.utc),
             ))
-
         await session.commit()
 
         response = await client.get("/api/episodes/?offset=2")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
 
 class TestGetEpisode:
@@ -74,7 +71,7 @@ class TestGetEpisode:
 
     async def test_returns_correct_data(self, client, episode):
         response = await client.get(f"/api/episodes/{episode.id}")
-        data = response.json()
+        data = response.json()["data"]
         assert data["name"] == "Pilot"
 
     async def test_not_found(self, client):
@@ -95,10 +92,8 @@ class TestUpdateEpisode:
             f"/api/episodes/{episode.id}",
             json={"name": "New Episode"}
         )
-
         response = await client.get(f"/api/episodes/{episode.id}")
-        data = response.json()
-
+        data = response.json()["data"]
         assert data["name"] == "New Episode"
 
     async def test_not_found(self, client):

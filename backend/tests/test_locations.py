@@ -1,4 +1,3 @@
-import pytest
 import pytest_asyncio
 from app.modules.location.models.location import Location
 
@@ -25,11 +24,11 @@ class TestGetLocations:
 
     async def test_returns_empty_list(self, client):
         response = await client.get("/api/locations/")
-        assert response.json() == []
+        assert response.json()["data"] == []
 
     async def test_returns_one_location(self, client, location):
         response = await client.get("/api/locations/")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
     async def test_limit(self, client, session):
         for i in range(5):
@@ -44,7 +43,7 @@ class TestGetLocations:
 
         response = await client.get("/api/locations/?limit=2")
         assert response.status_code == 200
-        assert len(response.json()) == 2
+        assert len(response.json()["data"]) == 2
 
     async def test_offset(self, client, session):
         for i in range(3):
@@ -58,7 +57,7 @@ class TestGetLocations:
         await session.commit()
 
         response = await client.get("/api/locations/?offset=2")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
 
 class TestGetLocation:
@@ -68,7 +67,7 @@ class TestGetLocation:
 
     async def test_returns_correct_data(self, client, location):
         response = await client.get(f"/api/locations/{location.id}")
-        data = response.json()
+        data = response.json()["data"]
         assert data["name"] == "Earth"
 
     async def test_not_found(self, client):
@@ -90,10 +89,9 @@ class TestUpdateLocation:
             json={"name": "New Earth"}
         )
         response = await client.get(f"/api/locations/{location.id}")
-        data = response.json()
-
+        data = response.json()["data"]
         assert data["name"] == "New Earth"
-        assert data["type"] == "Planet"
+        assert data["type"] == "Planet"  # не тронулось
 
     async def test_not_found(self, client):
         response = await client.patch(

@@ -1,4 +1,3 @@
-import pytest
 import pytest_asyncio
 from app.modules.character.models.character import Character, Status, Gender
 
@@ -27,11 +26,11 @@ class TestGetCharacters:
 
     async def test_returns_empty_list(self, client):
         response = await client.get("/api/characters/")
-        assert response.json() == []
+        assert response.json()["data"] == []
 
     async def test_returns_one_character(self, client, character):
         response = await client.get("/api/characters/")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
     async def test_limit(self, client, session):
         for i in range(5):
@@ -48,7 +47,7 @@ class TestGetCharacters:
 
         response = await client.get("/api/characters/?limit=2")
         assert response.status_code == 200
-        assert len(response.json()) == 2
+        assert len(response.json()["data"]) == 2
 
     async def test_offset(self, client, session):
         for i in range(3):
@@ -64,7 +63,7 @@ class TestGetCharacters:
         await session.commit()
 
         response = await client.get("/api/characters/?offset=2")
-        assert len(response.json()) == 1
+        assert len(response.json()["data"]) == 1
 
 
 class TestGetCharacter:
@@ -74,7 +73,7 @@ class TestGetCharacter:
 
     async def test_returns_correct_data(self, client, character):
         response = await client.get(f"/api/characters/{character.id}")
-        data = response.json()
+        data = response.json()["data"]
         assert data["name"] == "Rick Sanchez"
         assert data["status"] == "Alive"
 
@@ -97,7 +96,7 @@ class TestUpdateCharacter:
             json={"name": "Morty Smith"}
         )
         response = await client.get(f"/api/characters/{character.id}")
-        data = response.json()
+        data = response.json()["data"]
         assert data["name"] == "Morty Smith"
         assert data["species"] == "Human"  # не тронулось
 
@@ -108,8 +107,9 @@ class TestUpdateCharacter:
         )
         assert response.status_code == 404
 
+
 class TestDeleteCharacter:
-    async def test_returns_200(self, client, character):
+    async def test_returns_204(self, client, character):
         response = await client.delete(f"/api/characters/{character.id}")
         assert response.status_code == 204
 
