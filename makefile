@@ -1,6 +1,7 @@
-.PHONY: up down logs build rebuild restart ps \
+.PHONY: start stop logs build rebuild restart ps \
         bash-back bash-front \
-        migrate makemigrations downgrade
+        migrate makemigrations downgrade \
+        bootstrap flush-db test
 
 # 🚀 Запуск
 start:
@@ -72,21 +73,6 @@ test:
 	docker compose exec backend python -m pytest tests/ -v
 
 # Работа со сторонним апи
-
-import-all:
-	docker compose exec backend python -m app.core.cli import-all
-
-
-import-characters:
-	docker compose exec backend python -m app.core.cli import-data characters
-
-
-import-episodes:
-	docker compose exec backend python -m app.core.cli import-data episode
-
-
-import-locations:
-	docker compose exec backend python -m app.core.cli import-data location
 
 bootstrap:
 	docker compose exec backend python -m app.core.cli import-all

@@ -183,9 +183,6 @@ docker compose exec backend python -m app.core.cli import-all
 | `make makemigrations msg="..."` | Создать новую миграцию |
 | `make downgrade` | Откатить на 1 миграцию |
 | `make bootstrap` | Импорт всех данных из Rick&Morty API |
-| `make import-characters` | Импорт только персонажей |
-| `make import-episodes` | Импорт только эпизодов |
-| `make import-locations` | Импорт только локаций |
 | `make flush-db` | Очистить базу данных |
 | `make test` | Запустить тесты |
 
