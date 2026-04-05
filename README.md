@@ -157,7 +157,7 @@ docker compose exec backend alembic upgrade head
 ```bash
 make bootstrap
 # или
-docker compose exec backend python -m app.core.cli import-all
+docker compose exec backend python -m app.core.cli
 ```
 
 Импорт загружает все страницы персонажей, эпизодов и локаций (~800 персонажей, ~51 эпизод, ~126 локаций) и строит связи между ними. Занимает около 1–2 минут.

@@ -75,4 +75,4 @@ test:
 # Работа со сторонним апи
 
 bootstrap:
-	docker compose exec backend python -m app.core.cli import-all
+	docker compose exec backend python -m app.core.cli
