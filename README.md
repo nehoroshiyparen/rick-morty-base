@@ -131,6 +131,39 @@ src/
 - Docker + Docker Compose
 - Make (опционально, но удобно)
 
+### Переменные окружения
+
+Перед запуском скопируй `.env.example` в `.env` во всех трёх местах:
+
+```bash
+cp .env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+**`.env`** (корневой — читается docker-compose для маппинга портов)
+
+| Переменная | Описание |
+|---|---|
+| `APP_PORT` | Порт бэкенда, пробрасывается в хост |
+| `FRONTEND_PORT` | Порт фронтенда, пробрасывается в хост |
+
+**`backend/.env`**
+
+| Переменная | Описание |
+|---|---|
+| `APP_PORT` | Порт FastAPI-сервера внутри контейнера |
+| `CLIENT_URL` | URL фронтенда, разрешённый в CORS |
+| `DATABASE_URL` | Путь к SQLite-базе через aiosqlite |
+| `TEST_DATABASE_URL` | База для тестов (in-memory SQLite) |
+
+**`frontend/.env`**
+
+| Переменная | Описание |
+|---|---|
+| `FRONTEND_PORT` | Порт Vite dev-сервера внутри контейнера |
+| `VITE_API_URL` | Базовый URL бэкенд API |
+
 ### Шаг 1 — Запустить контейнеры
 
 ```bash

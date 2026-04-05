@@ -1,10 +1,8 @@
-version: "3.9"
-
 services:
   backend:
     build: ./backend
     ports:
-      - "7812:7812"
+      - "${APP_PORT:-7812}:${APP_PORT:-7812}"
     env_file:
       - ./backend/.env
     volumes:
@@ -13,7 +11,9 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
+    env_file:
+      - ./frontend/.env
     volumes:
       - ./frontend:/app
       - /app/node_modules

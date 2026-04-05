@@ -5,7 +5,6 @@ class Settings(BaseSettings):
     DEBUG: bool = True
 
     APP_PORT: int
-    APP_HOST: str
 
     CLIENT_URL: str
 
